@@ -207,7 +207,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ error: "Invalid credentials" });
       }
       
-      res.json({ success: true, message: "Login successful" });
+      // Generate a simple session token (in production, use proper JWT or sessions)
+      const token = Buffer.from(`${Date.now()}-${Math.random()}`).toString('base64');
+      
+      res.json({ success: true, message: "Login successful", token });
     } catch (error) {
       res.status(500).json({ error: "Login failed" });
     }

@@ -26,8 +26,10 @@ export default function AdminLoginPage() {
     setIsLoading(true);
     
     try {
-      await apiRequest("POST", "/api/admin/login", { password });
+      const res = await apiRequest("POST", "/api/admin/login", { password });
+      const data = await res.json();
       
+      // Store the admin password for API requests (sent in headers)
       localStorage.setItem("adminPassword", password);
       toast({
         title: "Success",
