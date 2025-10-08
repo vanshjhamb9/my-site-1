@@ -101,7 +101,7 @@ class DatabaseStorage implements IStorage {
   async getAllPosts(filters?: { published?: boolean; categoryId?: string; featured?: boolean }): Promise<BlogPost[]> {
     let query = this.db.select().from(blogPosts);
     
-    const conditions = [];
+    const conditions: any[] = [];
     if (filters?.published !== undefined) {
       conditions.push(eq(blogPosts.published, filters.published));
     }

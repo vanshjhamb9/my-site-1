@@ -4,12 +4,13 @@
   "type": "module",
   "license": "MIT",
   "scripts": {
-  "dev": "cross-env NODE_ENV=development tsx server/index.ts",
-  "build": "vite build",
-  "start": "cross-env NODE_ENV=production tsx server/index.ts",
-  "check": "tsc",
-  "db:push": "drizzle-kit push"
-},
+    "dev": "cross-env NODE_ENV=development tsx server/index.ts",
+    "build": "vite build",
+    "vercel-build": "vite build",
+    "start": "cross-env NODE_ENV=production tsx server/index.ts",
+    "check": "tsc",
+    "db:push": "drizzle-kit push"
+  },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
     "@iconify/react": "^6.0.1",
@@ -44,6 +45,7 @@
     "@radix-ui/react-tooltip": "^1.2.0",
     "@tanstack/react-query": "^5.60.5",
     "@vercel/analytics": "^1.5.0",
+    "@vercel/node": "^5.3.26",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
