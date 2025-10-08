@@ -10,6 +10,27 @@ The site is designed to demonstrate the company's expertise in AI solutions, mob
 
 Preferred communication style: Simple, everyday language.
 
+## Admin Panel
+
+**Routes**
+- `/admin/login` - Admin authentication page
+- `/admin` - Admin dashboard with overview stats
+- `/admin/leads` - Leads management (view, update status, delete)
+- `/admin/blog` - Blog post management (existing BlogAdminGate)
+
+**Features**
+- Secure admin authentication via ADMIN_PASSWORD environment variable
+- Leads tracking from contact form submissions
+- Lead status management (new, contacted, qualified, closed)
+- Direct email links for contacting leads
+- Blog post creation and management
+- Dashboard with quick stats and navigation
+
+**Security Note**
+- Current implementation uses password-based authentication with localStorage
+- For production deployment, implement JWT tokens or session-based auth with httpOnly cookies
+- All admin routes are protected by authentication middleware
+
 ## System Architecture
 
 ### Frontend Architecture
@@ -46,10 +67,12 @@ Preferred communication style: Simple, everyday language.
 - Each endpoint is a separate serverless function for independent scaling
 
 **API Structure**
+- Admin Authentication: Login endpoint with password verification (`/api/admin/login`, `/api/admin/check`)
+- Leads Management: CRUD operations for contact leads (`/api/admin/leads`)
 - Blog Categories: CRUD operations for category management
 - Blog Posts: Full blog post management with slug-based public access and ID-based admin access
 - Blog Media: Image/media management associated with blog posts
-- Contact Form: Email submission handling via Resend API
+- Contact Form: Email submission handling via Resend API (saves leads to database)
 
 **Authentication & Authorization**
 - Admin-only endpoints protected by custom middleware (`api/_utils/auth.ts`)
@@ -67,7 +90,8 @@ Preferred communication style: Simple, everyday language.
 ### Database Schema
 
 **Core Tables**
-- `users`: User authentication (id, username, password)
+- `users`: User authentication (id, username, password, isAdmin, createdAt)
+- `leads`: Contact form submissions and leads management (id, name, email, businessNeeds, message, status, createdAt)
 - `blog_categories`: Blog category management (id, name, slug, description, color, timestamps)
 - `blog_posts`: Full-featured blog posts with SEO metadata, publishing status, featured flags, tags, and view tracking
 - `blog_media`: Media files associated with blog posts
