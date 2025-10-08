@@ -1,6 +1,8 @@
 import { 
   type User, 
   type InsertUser,
+  type Lead,
+  type InsertLead,
   type BlogPost,
   type InsertBlogPost,
   type BlogCategory,
@@ -8,6 +10,7 @@ import {
   type BlogMedia,
   type InsertBlogMedia,
   users,
+  leads,
   blogCategories,
   blogPosts,
   blogMedia
@@ -21,6 +24,11 @@ export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
+  getAllLeads(): Promise<Lead[]>;
+  getLead(id: string): Promise<Lead | undefined>;
+  createLead(lead: InsertLead): Promise<Lead>;
+  updateLeadStatus(id: string, status: string): Promise<Lead | undefined>;
+  deleteLead(id: string): Promise<boolean>;
   getAllCategories(): Promise<BlogCategory[]>;
   getCategory(id: string): Promise<BlogCategory | undefined>;
   getCategoryBySlug(slug: string): Promise<BlogCategory | undefined>;
@@ -63,6 +71,34 @@ class DatabaseStorage implements IStorage {
   async createUser(insertUser: InsertUser): Promise<User> {
     const result = await this.db.insert(users).values(insertUser).returning();
     return result[0];
+  }
+
+  async getAllLeads(): Promise<Lead[]> {
+    return await this.db.select().from(leads).orderBy(desc(leads.createdAt));
+  }
+
+  async getLead(id: string): Promise<Lead | undefined> {
+    const result = await this.db.select().from(leads).where(eq(leads.id, id));
+    return result[0];
+  }
+
+  async createLead(insertLead: InsertLead): Promise<Lead> {
+    const result = await this.db.insert(leads).values(insertLead).returning();
+    return result[0];
+  }
+
+  async updateLeadStatus(id: string, status: string): Promise<Lead | undefined> {
+    const result = await this.db
+      .update(leads)
+      .set({ status })
+      .where(eq(leads.id, id))
+      .returning();
+    return result[0];
+  }
+
+  async deleteLead(id: string): Promise<boolean> {
+    const result = await this.db.delete(leads).where(eq(leads.id, id));
+    return result.rowCount ? result.rowCount > 0 : false;
   }
 
   async getAllCategories(): Promise<BlogCategory[]> {
