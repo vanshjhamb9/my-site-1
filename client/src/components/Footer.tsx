@@ -47,14 +47,7 @@ export default function Footer() {
               >
                 <FaFacebook />
               </motion.a>
-               <motion.a
-                href="/admin/blog"
-                className="w-10 h-10 glassmorphism rounded-full flex items-center justify-center text-white/70 hover:text-primary transition-colors"
-                whileHover={{ scale: 1.1, y: -2 }}
-                data-testid="link-email"
-              >
-                Admin
-              </motion.a>
+              
             </div>
           </div>
 
