@@ -3,10 +3,12 @@ import { adminAuth } from './_utils/auth.js';
 import { getStorage } from './_utils/storage.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  const path = req.url?.replace('/api/admin', '') || '/';
+  // Extract path from URL - Vercel passes the full path
+  const urlParts = req.url?.split('?')[0].split('/api/admin') || ['', ''];
+  const path = urlParts[1] || '/';
   
   // Admin login (no auth required)
-  if (path === '/login' && req.method === 'POST') {
+  if ((path === '/login' || path === '') && req.method === 'POST' && req.body?.password !== undefined) {
     try {
       const { password } = req.body;
       const envAdminPassword = process.env.ADMIN_PASSWORD;
@@ -18,6 +20,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const token = Buffer.from(`${Date.now()}-${Math.random()}`).toString('base64');
       return res.status(200).json({ success: true, message: 'Login successful', token });
     } catch (error: any) {
+      console.error('Login error:', error);
       return res.status(500).json({ error: 'Login failed' });
     }
   }
