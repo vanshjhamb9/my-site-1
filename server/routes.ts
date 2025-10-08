@@ -1,7 +1,7 @@
 import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertBlogPostSchema, insertBlogCategorySchema, insertBlogMediaSchema, contactFormSchema } from "@shared/schema";
+import { insertBlogPostSchema, insertBlogCategorySchema, insertBlogMediaSchema, contactFormSchema, insertLeadSchema } from "@shared/schema";
 import { getUncachableResendClient } from "./resend-client";
 
 // Admin authentication middleware using environment variables
@@ -197,6 +197,79 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin Authentication API
+  app.post("/api/admin/login", async (req, res) => {
+    try {
+      const { password } = req.body;
+      const envAdminPassword = process.env.ADMIN_PASSWORD;
+      
+      if (!envAdminPassword || password !== envAdminPassword) {
+        return res.status(401).json({ error: "Invalid credentials" });
+      }
+      
+      res.json({ success: true, message: "Login successful" });
+    } catch (error) {
+      res.status(500).json({ error: "Login failed" });
+    }
+  });
+
+  app.post("/api/admin/check", adminAuth, async (req, res) => {
+    res.json({ authenticated: true });
+  });
+
+  // Leads Management API
+  app.get("/api/admin/leads", adminAuth, async (req, res) => {
+    try {
+      const leads = await storage.getAllLeads();
+      res.json(leads);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch leads" });
+    }
+  });
+
+  app.get("/api/admin/leads/:id", adminAuth, async (req, res) => {
+    try {
+      const lead = await storage.getLead(req.params.id);
+      if (!lead) {
+        return res.status(404).json({ error: "Lead not found" });
+      }
+      res.json(lead);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch lead" });
+    }
+  });
+
+  app.patch("/api/admin/leads/:id/status", adminAuth, async (req, res) => {
+    try {
+      const { status } = req.body;
+      if (!status) {
+        return res.status(400).json({ error: "Status is required" });
+      }
+      
+      const lead = await storage.updateLeadStatus(req.params.id, status);
+      if (!lead) {
+        return res.status(404).json({ error: "Lead not found" });
+      }
+      
+      res.json(lead);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to update lead status" });
+    }
+  });
+
+  app.delete("/api/admin/leads/:id", adminAuth, async (req, res) => {
+    try {
+      const success = await storage.deleteLead(req.params.id);
+      if (!success) {
+        return res.status(404).json({ error: "Lead not found" });
+      }
+      
+      res.json({ message: "Lead deleted successfully" });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to delete lead" });
+    }
+  });
+
   // Contact Form API
   app.post("/api/contact", async (req, res) => {
     try {
@@ -209,6 +282,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const { name, email, businessNeeds, message } = result.data;
+      
+      // Save lead to database
+      await storage.createLead({
+        name,
+        email,
+        businessNeeds,
+        message: message || null
+      });
       
       // Get Resend client and send email
       const { client, fromEmail } = await getUncachableResendClient();

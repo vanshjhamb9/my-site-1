@@ -7,10 +7,13 @@ import {
   type InsertBlogCategory,
   type BlogMedia,
   type InsertBlogMedia,
+  type Lead,
+  type InsertLead,
   users,
   blogCategories,
   blogPosts,
-  blogMedia
+  blogMedia,
+  leads
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 import { drizzle } from "drizzle-orm/neon-http";
@@ -47,6 +50,13 @@ export interface IStorage {
   getMediaByPostId(postId: string): Promise<BlogMedia[]>;
   createMedia(media: InsertBlogMedia): Promise<BlogMedia>;
   deleteMedia(id: string): Promise<boolean>;
+
+  // Lead operations
+  getAllLeads(): Promise<Lead[]>;
+  getLead(id: string): Promise<Lead | undefined>;
+  createLead(lead: InsertLead): Promise<Lead>;
+  updateLeadStatus(id: string, status: string): Promise<Lead | undefined>;
+  deleteLead(id: string): Promise<boolean>;
 }
 
 export class MemStorage implements IStorage {
@@ -54,12 +64,14 @@ export class MemStorage implements IStorage {
   private blogCategories: Map<string, BlogCategory>;
   private blogPosts: Map<string, BlogPost>;
   private blogMedia: Map<string, BlogMedia>;
+  private leads: Map<string, Lead>;
 
   constructor() {
     this.users = new Map();
     this.blogCategories = new Map();
     this.blogPosts = new Map();
     this.blogMedia = new Map();
+    this.leads = new Map();
 
     // Add some default categories
     this.initializeDefaultCategories();
@@ -110,7 +122,12 @@ export class MemStorage implements IStorage {
 
   async createUser(insertUser: InsertUser): Promise<User> {
     const id = randomUUID();
-    const user: User = { ...insertUser, id };
+    const user: User = { 
+      ...insertUser, 
+      id, 
+      isAdmin: false,
+      createdAt: new Date()
+    };
     this.users.set(id, user);
     return user;
   }
@@ -258,6 +275,40 @@ export class MemStorage implements IStorage {
 
   async deleteMedia(id: string): Promise<boolean> {
     return this.blogMedia.delete(id);
+  }
+
+  // Lead methods
+  async getAllLeads(): Promise<Lead[]> {
+    return Array.from(this.leads.values()).sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+  }
+
+  async getLead(id: string): Promise<Lead | undefined> {
+    return this.leads.get(id);
+  }
+
+  async createLead(insertLead: InsertLead): Promise<Lead> {
+    const id = randomUUID();
+    const lead: Lead = { 
+      ...insertLead,
+      message: insertLead.message || null,
+      id, 
+      status: "new",
+      createdAt: new Date() 
+    };
+    this.leads.set(id, lead);
+    return lead;
+  }
+
+  async updateLeadStatus(id: string, status: string): Promise<Lead | undefined> {
+    const lead = this.leads.get(id);
+    if (!lead) return undefined;
+    const updatedLead = { ...lead, status };
+    this.leads.set(id, updatedLead);
+    return updatedLead;
+  }
+
+  async deleteLead(id: string): Promise<boolean> {
+    return this.leads.delete(id);
   }
 }
 
@@ -444,6 +495,35 @@ export class DatabaseStorage implements IStorage {
 
   async deleteMedia(id: string): Promise<boolean> {
     const result = await this.db.delete(blogMedia).where(eq(blogMedia.id, id));
+    return result.rowCount ? result.rowCount > 0 : false;
+  }
+
+  // Lead operations
+  async getAllLeads(): Promise<Lead[]> {
+    return await this.db.select().from(leads).orderBy(desc(leads.createdAt));
+  }
+
+  async getLead(id: string): Promise<Lead | undefined> {
+    const result = await this.db.select().from(leads).where(eq(leads.id, id));
+    return result[0];
+  }
+
+  async createLead(lead: InsertLead): Promise<Lead> {
+    const result = await this.db.insert(leads).values(lead).returning();
+    return result[0];
+  }
+
+  async updateLeadStatus(id: string, status: string): Promise<Lead | undefined> {
+    const result = await this.db
+      .update(leads)
+      .set({ status })
+      .where(eq(leads.id, id))
+      .returning();
+    return result[0];
+  }
+
+  async deleteLead(id: string): Promise<boolean> {
+    const result = await this.db.delete(leads).where(eq(leads.id, id));
     return result.rowCount ? result.rowCount > 0 : false;
   }
 }
