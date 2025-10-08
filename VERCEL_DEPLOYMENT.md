@@ -39,18 +39,21 @@ Configure these environment variables in your Vercel project settings:
 - `GET /api/blog/categories` - Get all categories
 - `GET /api/blog/categories/[id]` - Get category by ID
 - `POST /api/blog/categories/create` - Create category (admin)
+- `PUT /api/blog/categories/[id]` - Update category (admin)
+- `DELETE /api/blog/categories/[id]` - Delete category (admin)
 
 ### Blog Posts
 - `GET /api/blog/posts` - Get all posts (supports filters: published, categoryId, featured)
-- `GET /api/blog/posts/[slug]` - Get post by slug
+- `GET /api/blog/posts/[slug]` - Get post by slug (public)
+- `GET /api/blog/posts/id/[id]` - Get post by ID with media (admin)
 - `POST /api/blog/posts/create` - Create post (admin)
-- `PUT /api/blog/posts/update?id=<id>` - Update post (admin)
-- `DELETE /api/blog/posts/delete?id=<id>` - Delete post (admin)
+- `PUT /api/blog/posts/id/[id]` - Update post (admin)
+- `DELETE /api/blog/posts/id/[id]` - Delete post (admin)
 
 ### Blog Media
-- `GET /api/blog/media/[postId]` - Get media by post ID
+- `GET /api/blog/media/by-post/[postId]` - Get media by post ID
 - `POST /api/blog/media/create` - Create media (admin)
-- `DELETE /api/blog/media/delete?id=<id>` - Delete media (admin)
+- `DELETE /api/blog/media/[id]` - Delete media by ID (admin)
 
 ### Contact Form
 - `POST /api/contact` - Submit contact form
