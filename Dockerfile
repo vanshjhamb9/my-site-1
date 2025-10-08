@@ -3,7 +3,14 @@ FROM node:20 AS frontend-builder
 
 WORKDIR /app
 
-COPY client ./client
+COPY client/package.json ./client/
+COPY client/ ./client/
+
+# Generate package-lock.json inside Docker by installing dependencies
+RUN cd client && npm install
+
+# Build the frontend
+RUN cd client && npm run build
 COPY shared ./shared
 COPY package.json package-lock.json ./
 COPY client/package.json client/package-lock.json ./client/
