@@ -1,0 +1,41 @@
+A server error has occurred
+
+FUNCTION_INVOCATION_FAILED
+
+bom1::7k5z6-1759953771257-0f6d18d234ad
+Request URL
+https://my-site-brown-sigma.vercel.app/api/contact
+Request Method
+POST
+Status Code
+500 Internal Server Error
+Remote Address
+64.29.17.131:443
+Referrer Policy
+strict-origin-when-cross-origin
+
+
+Oct 09 01:31:36.16
+GET
+500
+my-site-brown-sigma.vercel.app
+/api/contact
+Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/var/task/shared/schema' imported from /var/task/api/contact.js at finalizeResolution (node:internal/modules/esm/resolve:280:11) at moduleResolve (node:internal/modules/esm/resolve:865:10) at moduleResolveWithNodePath (node:internal/modules/esm/resolve:989:14) at defaultResolve (node:internal/modules/esm/resolve:1032:79) at ModuleLoader.defaultResolve (node:internal/modules/esm/loader:783:12) at #cachedDefaultResolve (node:internal/modules/esm/loader:707:25) at ModuleLoader.resolve (node:internal/modules/esm/loader:690:38) at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:307:38) at ModuleJob._link (node:internal/modules/esm/module_job:183:49) at process.processTicksAndRejections (node:internal/process/task_queues:105:5) { code: 'ERR_MODULE_NOT_FOUND', url: 'file:///var/task/shared/schema' } Node.js process exited with exit status: 1. The logs above can help with debugging the issue.
+No more logs to show within selected timeline
+Logs
+1 Error
+Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/var/task/shared/schema' imported from /var/task/api/contact.js
+    at finalizeResolution (node:internal/modules/esm/resolve:280:11)
+    at moduleResolve (node:internal/modules/esm/resolve:865:10)
+    at moduleResolveWithNodePath (node:internal/modules/esm/resolve:989:14)
+    at defaultResolve (node:internal/modules/esm/resolve:1032:79)
+    at ModuleLoader.defaultResolve (node:internal/modules/esm/loader:783:12)
+    at #cachedDefaultResolve (node:internal/modules/esm/loader:707:25)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:690:38)
+    at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:307:38)
+    at ModuleJob._link (node:internal/modules/esm/module_job:183:49)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5) {
+  code: 'ERR_MODULE_NOT_FOUND',
+  url: 'file:///var/task/shared/schema'
+}
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.

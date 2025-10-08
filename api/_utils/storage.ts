@@ -11,7 +11,7 @@ import {
   blogCategories,
   blogPosts,
   blogMedia
-} from "../../shared/schema";
+} from "../../shared/schema.js";
 import { randomUUID } from "crypto";
 import { drizzle } from "drizzle-orm/neon-http";
 import { neon } from "@neondatabase/serverless";
