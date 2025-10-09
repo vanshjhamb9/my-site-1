@@ -1,5 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { contactFormSchema } from '../shared/schema.js';
+import { contactFormSchema, insertLeadSchema } from '../shared/schema.js';
+import { getStorage } from './_utils/storage.js';
 import { Resend } from 'resend';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -19,11 +20,23 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     const { name, email, businessNeeds, message } = result.data;
     
+    // Save lead to database
+    const storage = getStorage();
+    await storage.createLead({
+      name,
+      email,
+      businessNeeds,
+      message: message || null
+    });
+    
+    // Send email notification
     const resendApiKey = process.env.RESEND_API_KEY;
     if (!resendApiKey) {
       console.error('RESEND_API_KEY not configured');
-      return res.status(500).json({ 
-        error: 'Email service not configured' 
+      // Still return success since the lead was saved
+      return res.status(200).json({ 
+        success: true, 
+        message: "Your message has been received! We'll get back to you soon." 
       });
     }
 

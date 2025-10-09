@@ -56,6 +56,29 @@ class DatabaseStorage implements IStorage {
     }
     const queryClient = neon(process.env.DATABASE_URL);
     this.db = drizzle(queryClient);
+    
+    // Initialize default admin user
+    this.initializeDefaultAdmin();
+  }
+
+  private async initializeDefaultAdmin() {
+    try {
+      const existingAdmin = await this.db
+        .select()
+        .from(users)
+        .where(eq(users.id, "admin"));
+      
+      if (existingAdmin.length === 0) {
+        await this.db.insert(users).values({
+          id: "admin",
+          username: "admin",
+          password: "default_password",
+          isAdmin: true,
+        });
+      }
+    } catch (error) {
+      // Silently ignore if already exists
+    }
   }
 
   async getUser(id: string): Promise<User | undefined> {

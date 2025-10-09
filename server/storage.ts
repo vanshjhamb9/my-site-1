@@ -73,8 +73,21 @@ export class MemStorage implements IStorage {
     this.blogMedia = new Map();
     this.leads = new Map();
 
+    // Add default admin user
+    this.initializeDefaultAdmin();
     // Add some default categories
     this.initializeDefaultCategories();
+  }
+
+  private initializeDefaultAdmin() {
+    const defaultAdmin: User = {
+      id: "admin",
+      username: "admin",
+      password: "hashed_password", // In real app, this would be hashed
+      isAdmin: true,
+      createdAt: new Date(),
+    };
+    this.users.set(defaultAdmin.id, defaultAdmin);
   }
 
   private initializeDefaultCategories() {
@@ -323,8 +336,40 @@ export class DatabaseStorage implements IStorage {
     const queryClient = neon(process.env.DATABASE_URL);
     this.db = drizzle(queryClient);
     
-    // Initialize default categories
-    this.initializeDefaultCategories();
+    // Initialize defaults
+    this.initializeDefaults();
+  }
+
+  private async initializeDefaults() {
+    try {
+      await this.initializeDefaultAdmin();
+      await this.initializeDefaultCategories();
+    } catch (error) {
+      console.error("Error initializing defaults:", error);
+    }
+  }
+
+  private async initializeDefaultAdmin() {
+    try {
+      // Check if admin user exists
+      const existingAdmin = await this.db
+        .select()
+        .from(users)
+        .where(eq(users.id, "admin"));
+      
+      if (existingAdmin.length === 0) {
+        // Create default admin user
+        await this.db.insert(users).values({
+          id: "admin",
+          username: "admin",
+          password: "default_password", // In production, use proper hashing
+          isAdmin: true,
+        });
+        console.log("Default admin user created");
+      }
+    } catch (error) {
+      console.error("Error creating default admin user:", error);
+    }
   }
 
   private async initializeDefaultCategories() {
