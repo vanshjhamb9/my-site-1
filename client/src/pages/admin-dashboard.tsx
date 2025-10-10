@@ -11,6 +11,10 @@ import type { Lead } from "@shared/schema";
 
 export default function AdminDashboardPage() {
   const [, setLocation] = useLocation();
+
+    useEffect(() => {
+      window.scrollTo(0, 0);
+    }, []);
   
   useDocumentMeta({
     title: "Admin Dashboard | Neural Coder AI",
