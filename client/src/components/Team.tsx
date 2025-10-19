@@ -5,6 +5,8 @@ import HelenImage from "../image/CFO.jpg"
 import CTO from "../image/image2.jpeg"
 import CMO from "../image/CMO.jpeg"
 import { useLocation } from "wouter";
+import Sanobar from "../image/WhatsApp Image 2025-10-11 at 15.56.37_3b805e92.jpg"
+import Swaroop from "../image/swaroop.jpg"
 
 
 const teamMembers = [
@@ -31,6 +33,18 @@ const teamMembers = [
     role: "Chief Marketing officer",
     specialty: "Marketing Strategy & Operations",
     image: CMO,
+  },
+   {
+    name: "Dr. Sanobar Sheikh",
+    role: "Principal consultant for health care industry",
+    specialty: "MBBS, MBA - Global Healthcare Management and Leadership",
+    image: Sanobar,
+  },
+   {
+    name: "Swaroop TG",
+    role: "Principal consultant for auto industry",
+    specialty: "20+ yrs in automotive industry and 3+ yrs entrepreneurship Angel investor",
+    image: Swaroop,
   },
 
 ];
