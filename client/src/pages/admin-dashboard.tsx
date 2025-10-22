@@ -9,8 +9,14 @@ import { useDocumentMeta } from "@/hooks/use-document-title";
 import { apiRequest } from "@/lib/queryClient";
 import type { Lead } from "@shared/schema";
 
+  
+
 export default function AdminDashboardPage() {
   const [, setLocation] = useLocation();
+
+  useEffect(() => {
+  window.scrollTo(0, 0);
+}, []);
   
   useDocumentMeta({
     title: "Admin Dashboard | Neural Coder AI",
