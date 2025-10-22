@@ -5,8 +5,8 @@ import HelenImage from "../image/CFO.jpg"
 import CTO from "../image/image2.jpeg"
 import CMO from "../image/CMO.jpeg"
 import { useLocation } from "wouter";
-import Sanobar from "../image/WhatsApp Image 2025-10-20 at 1.30.19 PM (1).jpeg"
-import Swaroop from "../image/WhatsApp Image 2025-10-20 at 1.30.19 PM.jpeg"
+import Sanobar from "../image/WhatsApp Image 2025-10-11 at 15.56.37_3b805e92.jpg"
+import Swaroop from "../image/swaroop.jpg"
 
 
 const teamMembers = [
@@ -172,7 +172,6 @@ export default function Team() {
             </div>
           </div>
         </motion.div>
-      
       </div>
     </section>
   );

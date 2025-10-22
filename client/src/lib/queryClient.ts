@@ -11,12 +11,18 @@ export async function apiRequest(
   method: string,
   url: string,
   data?: unknown | undefined,
-  customHeaders?: Record<string, string>,
 ): Promise<Response> {
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
-    ...customHeaders,
   };
+
+  // Add admin auth header if accessing admin endpoints
+  if (url.includes('/api/admin/')) {
+    const adminAuth = localStorage.getItem("adminAuth");
+    if (adminAuth) {
+      headers["X-Admin-Password"] = "admin123";
+    }
+  }
 
   const res = await fetch(url, {
     method,
@@ -35,8 +41,20 @@ export const getQueryFn: <T>(options: {
 }) => QueryFunction<T> =
   ({ on401: unauthorizedBehavior }) =>
   async ({ queryKey }) => {
-    const res = await fetch(queryKey.join("/") as string, {
+    const url = queryKey.join("/") as string;
+    const headers: Record<string, string> = {};
+    
+    // Add admin auth header if accessing admin endpoints
+    if (url.includes('/api/admin/')) {
+      const adminAuth = localStorage.getItem("adminAuth");
+      if (adminAuth) {
+        headers["X-Admin-Password"] = "admin123";
+      }
+    }
+
+    const res = await fetch(url, {
       credentials: "include",
+      headers,
     });
 
     if (unauthorizedBehavior === "returnNull" && res.status === 401) {
