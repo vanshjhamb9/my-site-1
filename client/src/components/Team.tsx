@@ -172,10 +172,7 @@ export default function Team() {
             </div>
           </div>
         </motion.div>
-      </div>
-    </section>
-  );
-}
+      
       </div>
     </section>
   );
