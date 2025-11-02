@@ -336,16 +336,18 @@ export default function Contact() {
                   </div>
                 </motion.div>
                 
-                <motion.div 
-                  className="flex items-center gap-4 p-4 glassmorphism rounded-xl hover-lift"
-                  whileHover={{ x: 5 }}
-                >
-                  <FaPhone className="text-primary text-xl" />
-                  <div>
-                    <p className="font-semibold text-foreground">Phone</p>
-                    <p className="text-muted-foreground">Schedule a call</p>
-                  </div>
-                </motion.div>
+               <motion.a
+      href="tel:9606946275"
+      className="flex items-center gap-4 p-4 glassmorphism rounded-xl hover-lift cursor-pointer"
+      whileHover={{ x: 5 }}
+    >
+      <FaPhone className="text-primary text-xl" />
+      <div>
+        <p className="font-semibold text-foreground">Phone</p>
+        <p className="text-muted-foreground">9606946275</p>
+        <p className="text-sm text-muted-foreground">Schedule a call</p>
+      </div>
+    </motion.a>
               </div>
             </div>
 
