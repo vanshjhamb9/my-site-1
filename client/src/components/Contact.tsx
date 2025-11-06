@@ -332,7 +332,7 @@ export default function Contact() {
                   <FaEnvelope className="text-primary text-xl" />
                   <div>
                     <p className="font-semibold text-foreground">Email</p>
-                    <p className="text-muted-foreground">sales@neuralcoder.ai</p>
+                    <p className="text-muted-foreground">sales@neuralcoderai.com</p>
                   </div>
                 </motion.div>
                 
